@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0174893e9f1ef4087f3ac9173e4c91, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  dialogue:
+  - "This is a test dialogue \nThis is the second line and the first speech\n\n\n"
+  - "I think it work Ok\nThis is a test dialogue \nThis is the third and the second
+    speech\n\n\n"
+  - So do you wanna help me test this thing
+  responses:
+  - responseText: Yes I'll help
+    dialogueObject: {fileID: 11400000, guid: 3a4e06673c2b8b9489bee6adb6ae4e33, type: 2}
+  - responseText: No its boring
+    dialogueObject: {fileID: 11400000, guid: 78290e4d6a689a0468820dfb4dfdfc9b, type: 2}
