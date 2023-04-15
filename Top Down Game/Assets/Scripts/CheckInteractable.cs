@@ -6,36 +6,33 @@ public class CheckInteractable : MonoBehaviour
 {
     [SerializeField] private float CheckRadius = 1f;
     [SerializeField] private LayerMask layerMaskToCheck;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
         
-    }
-
-    private void FixedUpdate()
-    {
-        RaycastHit2D castHit = Physics2D.CircleCast(transform.position, CheckRadius, Vector2.zero,0, layerMask:layerMaskToCheck);
-        if (castHit.collider != null)
+        if (Input.GetMouseButtonDown(0)) // This will be replaced with a interaction button this is just for test
         {
-            if (castHit.collider.TryGetComponent<Interactable>(out Interactable interactable))
+            RaycastHit2D castHit = Physics2D.CircleCast(transform.position, CheckRadius, Vector2.zero, 0, layerMask: layerMaskToCheck);
+            if (castHit.collider != null)
             {
-                
-                if (interactable.interactionType == Interactable.InteractionTypes.Talk)
+                if (castHit.collider.TryGetComponent<Interactable>(out Interactable interactable))
                 {
-                    
-                    if (Input.GetMouseButtonDown(0)) // This will be replaced with a interaction button this is just for test
+
+                    if (interactable.interactionType == Interactable.InteractionTypes.Talk)
                     {
-                        Debug.Log("Interacted");
+                        if (!DialogueUI.Instance.IsOpen)
+                        {
+                            Debug.Log("Talked");
+                            interactable.Interact();
+                        }
+                    }
+                    else
+                    {
                         interactable.Interact();
-                        
                     }
                 }
             }
         }
     }
+
 }

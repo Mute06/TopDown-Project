@@ -7,6 +7,7 @@ using System;
 
 public class ResponseHandler : MonoBehaviour
 {
+    [SerializeField] private Color[] responseColors;
     [SerializeField] private RectTransform responseBox, responseContainer;
     [SerializeField] private GameObject respongeButtonPrefab;
     private RectTransform responseButtonTemplate;
@@ -21,26 +22,40 @@ public class ResponseHandler : MonoBehaviour
         responseButtonTemplate = respongeButtonPrefab.GetComponent<RectTransform>();
     }
 
-    public void ShowResponses(Response[] responses)
+    public void ShowResponses(string[] responses)
     {
         float responseBoxHeight = 0f;
-
-        foreach (Response response in responses)
+        int responseIndex = 0;
+        foreach (string response in responses)
         {
             GameObject responseButton = Instantiate(respongeButtonPrefab, responseContainer);
-            responseButton.gameObject.SetActive(true);
-            responseButton.GetComponent<TMP_Text>().text = response.ResponseText;
-            responseButton.GetComponent<Button>().onClick.AddListener( () => OnPickedResponse(response) );
+            responseButton.SetActive(true);
+            Image optionBG = responseButton.GetComponentInChildren<Image>();
+            responseButton.GetComponentInChildren<TMP_Text>().text = response;
+            int index = responseIndex;
+            responseButton.GetComponent<Button>().onClick.AddListener( () => OnPickedResponse(index) );
             tempResponseButtons.Add(responseButton);
 
             responseBoxHeight += responseButtonTemplate.sizeDelta.y;
+
+            for (int i = 0; i < responseColors.Length; i++)
+            {
+                if (responseIndex % responseColors.Length == i)
+                {
+                    optionBG.color = responseColors[i];
+                    break;
+                }
+            }
+
+
+            responseIndex++;
         }
 
         responseBox.sizeDelta = new Vector2(responseBox.sizeDelta.x, responseBoxHeight);
         responseBox.gameObject.SetActive(true);
     }
 
-    private void OnPickedResponse(Response response)
+    private void OnPickedResponse(int ResponseIndex)
     {
         responseBox.gameObject.SetActive(false);
 
@@ -49,7 +64,20 @@ public class ResponseHandler : MonoBehaviour
             Destroy(button);
         }
         tempResponseButtons.Clear();
-
-        dialogueUI.PassToNewDialogue(response.Dialogue);
+        Debug.Log(ResponseIndex);
+        var _port = dialogueUI.GetCurrentDialogueObject().GetPort("responses " + ResponseIndex);
+        if (_port != null && _port.IsConnected)
+        {
+            
+            if (_port.Connection.node.GetType() == typeof(DialogueObject))
+            {
+                dialogueUI.PassToNewDialogue(_port.Connection.node as DialogueObject);
+            }
+            (_port.Connection.node as DialogueBaseNode).Trigger();
+        }
+        else
+        {
+            dialogueUI.CloseDialogueBox();
+        }
     }
 }
